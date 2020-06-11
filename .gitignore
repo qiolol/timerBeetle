@@ -1,0 +1,10 @@
+# Private files
+*.unpublished
+
+# Linux icon files
+.directory
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
