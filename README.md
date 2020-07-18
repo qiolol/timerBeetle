@@ -11,11 +11,11 @@ Cooking, Pomodoro, ... (that's about all I use it for), without picking up the p
 
 ![example clip of timer starting](./example_start.gif)
 
-When finished, it plays an alarm sound using aplay...
+When finished, it plays an alarm sound using aplay (alsa-utils package)...
 
 ![example clip of timer finishing](./example_end.gif)
 
-...and shows a notification using notify-send (libnotify).
+...and shows a notification using notify-send (libnotify package).
 
 ![example clip of timer notification](./example_notif.gif)
 
