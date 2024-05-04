@@ -76,8 +76,10 @@ def parseTimeInSecs():
 
     # Multiunit format
     timeIn = timeIn.lower()
-    wholeMatchObj = re.match('^(\d+[dhms])[ ]*(\d+?[dhms])?[ ]*(\d+?[dhms])?[ \
-    ]*(\d+?[dhms])?[ ]*$', timeIn)
+    wholeMatchObj = re.match('^(\\d+[dhms])[ ]*\
+(\\d+?[dhms])?[ ]*\
+(\\d+?[dhms])?[ ]*\
+(\\d+?[dhms])?[ ]*$', timeIn)
 
     gotDay = False
     gotHr = False
@@ -105,7 +107,7 @@ def parseTimeInSecs():
         for group in wholeMatchObj.groups():
             if group is not None:
                 # A group has something like " 12h"
-                groupMatchObj = re.match('^[ ]*(\d+)([dhms])$', group)
+                groupMatchObj = re.match('^[ ]*(\\d+)([dhms])$', group)
                 amount = int(groupMatchObj.group(1))
                 unit = groupMatchObj.group(2)
 
