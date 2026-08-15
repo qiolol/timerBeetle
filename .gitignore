@@ -4,7 +4,8 @@
 # Linux icon files
 .directory
 
-# Byte-compiled / optimized / DLL files
+# Generated files
+timerBeetle
 __pycache__/
 *.py[cod]
 *$py.class

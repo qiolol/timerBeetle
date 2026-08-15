@@ -16,12 +16,24 @@
 import sys
 import re
 import time
+import shutil
 import subprocess
 # Non-blocking input stuff,
 # cargo culted from https://stackoverflow.com/a/2409034
 import select
 import tty
 import termios
+# Use `os` to get the env var `TIMERBEETLE_ASSETS` from the launcher (when
+# we're installed) or (during development) fall back to the `assets/` dir
+# sitting next to this script, resolved absolutely via `realpath()` so that
+# it's symlink-safe.
+import os
+ASSET_DIR = os.environ.get(
+    "TIMERBEETLE_ASSETS",
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "assets"),
+)
+ICON_PATH = os.path.join(ASSET_DIR, "icon.png")
+ALARM_SOUND_PATH = os.path.join(ASSET_DIR, "alarm_sound.wav")
 
 # ANSI color escape codes:
 # https://en.wikipedia.org/wiki/ANSI_escape_code#3/4_bit
@@ -139,6 +151,31 @@ def parseTimeInSecs():
                     sys.exit(1)
 
         return totalSecs
+        
+def playAlarm():
+    players = [
+        ['pw-play'],          # PipeWire
+        ['paplay'],           # PulseAudio / pipewire-pulse
+        ['aplay', '-q'],      # Pure ALSA (oldschool)
+    ]
+    
+    for player in players:
+        if shutil.which(player[0]):
+            subprocess.Popen(player + [ALARM_SOUND_PATH])
+            return player[0]
+    print('ERROR: Couldn\'t find an audio player to play the alarm with! ' +\
+            brightGreen +\
+            ',' +\
+            yellow +\
+            '?' +\
+            brightGreen +\
+            'w' +\
+            yellow +\
+            '?' +\
+            brightGreen +\
+            ',' +\
+            reset)
+    return None
 
 ###############################################################################
 # Non-blocking input sensing                                                  #
@@ -151,9 +188,6 @@ def gotInput():
 ####################################################################\UwU/######
 def main():
     secsIn = parseTimeInSecs()
-
-    alarmSoundPath = sys.path[0] + '/assets/alarm_sound.wav'
-    iconPath = sys.path[0] + '/assets/icon.png'
 
     # Non-blocking input boilerplate
     oldSettings = termios.tcgetattr(sys.stdin)
@@ -268,10 +302,9 @@ def main():
 
     # Finished; play alert sound and show notification
     finishTime = time.strftime('%H:%M:%S')
-
-    subprocess.Popen(['aplay', '-q', alarmSoundPath])
+    playAlarm()
     subprocess.Popen(['notify-send', '-t', '5000', '-u', 'normal', '-i',
-        iconPath, '\\OwO/\n*Timer beetle BITES!* (@ ' + finishTime + ')'])
+        ICON_PATH, '\\OwO/\n*Timer beetle BITES!* (@ ' + finishTime + ')'])
     print('*Timer beetle BITES!* ' +\
         brightGreen +\
         '\\' +\

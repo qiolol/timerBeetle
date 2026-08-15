@@ -1,0 +1,3 @@
+#!/bin/sh
+export TIMERBEETLE_ASSETS="@DATADIR@/assets"
+exec python3 "@LIBDIR@/timerBeetle.py" "$@"
