@@ -41,7 +41,10 @@ To customize the alarm sound, replace the file `assets/alarm_sound.wav`.
 
 ## installation
 
-`sudo make install` will copy all relevant files to your `/usr/local/` directories.
+`sudo make install` will copy all relevant files to your `/usr/local/` directories and put the script on your `PATH` as `timerBeetle`, at which point you'll simply be able to run it from anywhere:
+```
+$ timerBeetle 5
+```
 
 `sudo make uninstall` will, symmetrically, remove everything.
 

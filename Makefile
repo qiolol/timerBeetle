@@ -1,17 +1,31 @@
+# Why even install this? Well, if you link the script to `/usr/local/bin`, where
+# it's potentially run by root, the script should be owned by root too
+# (otherwise, non-root users can write to it, injecting instructions that are
+# later run as root, which could be pretty bad). But, if the script's repo is
+# owned by root, you've got Git/editor headaches since you need root permissions
+# to do anything in it. The proper, secure way is to copy it to `/usr/local/bin`
+# and make the copy owned by root. However, the script needs asset files (an
+# icon and an alarm sound)! So we need to copy those too. "Copying lots of stuff
+# with proper ownership and permissions" is known as "installing", so we might
+# as well have an installer! This is that installer. (It could also be a wheel
+# installed by `pip`, but who needs that when you can use `make` instead?!)
+
 # Set a prefix (unless one's already set):
 PREFIX  ?= /usr/local
-
 # Directories to install into
 BINDIR   = $(PREFIX)/bin
 LIBDIR   = $(PREFIX)/lib/timerBeetle
 DATADIR =  $(PREFIX)/share/timerBeetle
+# Comporting to the sacred FHS (and assuming `PREFIX` is `/usr/local`), this
+# will install the script thusly:  
+#     - `/usr/local/bin/timerBeetle`: launcher on `PATH` which runs the script
+#     - `/usr/local/lib/timerBeetle/timerBeetle.py`: script (NOT run directly)
+#     - `/usr/local/share/timerBeetle/assets/*`: image and sound files
 
 .PHONY: install uninstall clean
 
-# Generate the launcher with the real runtime paths baked into the launcher
-# template.
-# 
-# (No `DESTDIR` here; these are the paths as seen on the target system.)
+# Generate the launcher by replacing the launcher template's dummy paths with
+# the real runtime paths via `sed`.
 timerBeetle: timerBeetle.sh.in
 	sed -e 's|@LIBDIR@|$(LIBDIR)|g' \
 	    -e 's|@DATADIR@|$(DATADIR)|g' \
