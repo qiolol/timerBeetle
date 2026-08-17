@@ -25,7 +25,8 @@ DATADIR =  $(PREFIX)/share/timerBeetle
 .PHONY: install uninstall clean
 
 # Generate the launcher by replacing the launcher template's dummy paths with
-# the real runtime paths via `sed`.
+# the real runtime paths via `sed` and then stripping the `.sh.in` extension
+# (with the fish thing at the end, where `$<` and `$@` are Make variables).
 timerBeetle: timerBeetle.sh.in
 	sed -e 's|@LIBDIR@|$(LIBDIR)|g' \
 	    -e 's|@DATADIR@|$(DATADIR)|g' \
@@ -43,7 +44,7 @@ install: timerBeetle
 	install -m 0644 assets/icon.png        "$(DESTDIR)$(DATADIR)/assets/"
 	install -m 0644 assets/alarm_sound.wav "$(DESTDIR)$(DATADIR)/assets/"
 
-	# Launcher (0755 = executable, on `PATH`; installed WITHOUT the `.sh`)
+	# Generated launcher, already extensionless (0755 = exe'able on `PATH`)
 	install -d "$(DESTDIR)$(BINDIR)"
 	install -m 0755 timerBeetle "$(DESTDIR)$(BINDIR)/timerBeetle"
 
